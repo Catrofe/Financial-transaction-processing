@@ -1,0 +1,13 @@
+version: "3"
+services:
+
+  DBpostgres:
+    image: postgres:11
+    container_name: Transactions
+    restart: always
+    environment:
+      - POSTGRES_DB=challenger_transaction
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - 5432:5432
