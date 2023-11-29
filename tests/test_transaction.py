@@ -25,8 +25,7 @@ def db() -> None:
 
 @pytest.fixture
 def app(db: None) -> FastAPI:
-    app = create_app(Settings(db_url=db_url))
-    return app
+    return create_app(Settings(db_url=db_url))
 
 
 def create_transaction(app_function: FastAPI):
