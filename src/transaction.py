@@ -18,14 +18,14 @@ async def create_transaction(
 ) -> TransactionOutput | Error:
     try:
         value: str = str(request.value)
-        if "." not in str(value):
-            value = str(value) + "00"
+        if "." not in value:
+            value += "00"
         elif request.value < 0:
             return Error(
                 reason="BAD_REQUEST", message="VALUE_MUST_BE_POSITIVE", status_code=400
             )
 
-        request.value = int(str(value).replace(".", ""))
+        request.value = int(value.replace(".", ""))
 
         id = await repository.create_transaction(request)
 

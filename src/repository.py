@@ -65,11 +65,7 @@ class TransactionRepository:
                 )
                 balance = query_select.scalar()
 
-                if not balance:
-                    return None
-
-                return Decimal(balance / 100)
-
+                return None if not balance else Decimal(balance / 100)
         except (DataError, IntegrityError, OperationalError, StatementError):
             logger.exception("Failed to get balance")
             await session.rollback()
@@ -117,19 +113,17 @@ class TransactionRepository:
                 )
                 balance = query_select.scalars()
 
-                historic = []
-                for item in balance:
-                    historic.append(
-                        Transactions(
-                            client_id=item.client_id,
-                            transaction_timestamp=item.transaction_timestamp,
-                            value=Decimal(
-                                str(item.value)[:-2] + "." + str(item.value)[-2:]
-                            ),
-                            description=item.description,
-                        )
+                historic = [
+                    Transactions(
+                        client_id=item.client_id,
+                        transaction_timestamp=item.transaction_timestamp,
+                        value=Decimal(
+                            f"{str(item.value)[:-2]}.{str(item.value)[-2:]}"
+                        ),
+                        description=item.description,
                     )
-
+                    for item in balance
+                ]
                 return HistoricOutput(transactions=historic)
 
         except (DataError, IntegrityError, OperationalError, StatementError):
